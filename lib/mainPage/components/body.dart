@@ -53,10 +53,7 @@ class _BodyState extends State<Body> {
                 decoration: InputDecoration(
                     hintText: "Contraseña",
                     border: InputBorder.none,
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(25)),
-                    ),
+
                   icon: Icon(
                     Icons.lock,
                     color: orangePark,

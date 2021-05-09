@@ -1,13 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flashpark_client/components/text_field_container.dart';
 import 'package:flashpark_client/registro/components/background.dart';
 import 'package:flashpark_client/components/rounded_button.dart';
 import 'package:flashpark_client/components/rounded_input_field_general.dart';
 import 'package:flashpark_client/mapScreen/map.dart';
 import 'package:flutter/material.dart';
 
-class Body extends StatelessWidget {
-  String email, password;
+import '../../constants.dart';
+
+class Body extends StatefulWidget {
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  String email, password, nombre, apellido, celular, vehiculo, placa;
+
   final auth = FirebaseAuth.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -33,37 +44,81 @@ class Body extends StatelessWidget {
                 email = value.trim();
               },
             ),
-            RoundedInputFieldGeneral(
-              hintText: "Contraseña",
-              onChanged: (value) {
-                password = value.trim();
-              },
+            TextFieldContainer(
+              child: TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  hintText: "Contraseña",
+                  border: InputBorder.none,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.all(Radius.circular(25)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.all(Radius.circular(25)),
+                    )
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    password = value.trim();
+                  });
+                },
+              ),
             ),
             RoundedInputFieldGeneral(
               hintText: "Nombre",
-              onChanged: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  nombre = value.trim();
+                });
+              },
             ),
             RoundedInputFieldGeneral(
               hintText: "Apellido",
-              onChanged: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  apellido = value.trim();
+                });
+              },
             ),
             RoundedInputFieldGeneral(
               hintText: "Celular",
-              onChanged: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  celular = value.trim();
+                });
+              },
             ),
             RoundedInputFieldGeneral(
               hintText: "Tipo de Vehiculo",
-              onChanged: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  vehiculo = value.trim();
+                });
+              },
             ),
             RoundedInputFieldGeneral(
               hintText: "Placa",
-              onChanged: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  placa = value.trim();
+                });
+              },
             ),
             RoundedButton(
               text: "Registrarse",
               press: () {
                 auth.createUserWithEmailAndPassword(
                     email: email, password: password);
+                firestoreInstance.collection("users").add({
+                  "name": nombre,
+                  "apellido": apellido,
+                  "celular": celular,
+                  "email": email,
+                  "vehiculo": vehiculo,
+                  "placa": placa
+                }).then((value) => print(value.id));
                 Navigator.push(
                   context,
                   MaterialPageRoute(
